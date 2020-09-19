@@ -6,18 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Trip_Paket;
 use Redirect;
+
 class CartController extends Controller
 {
     // menampilkan session
     public function index(Request $request)
-    {   
+    {
         // $request->session()->forget('cart');
-        $data= array();
-        if($request->session()->has('cart')){
+        $data = array();
+        if ($request->session()->has('cart')) {
             $data = [
                 'cart' => $request->session()->get('cart'),
             ];
-        }else{
+        } else {
             $data = [
                 'cart' => '',
             ];
@@ -29,17 +30,17 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $p = explode("/", $request->jml);
-        $price= $p[0]*$p[1];
+        $price = $p[0] * $p[1];
         $id = $request->id;
-        $pw = Trip_Paket::find($id); 
+        $pw = Trip_Paket::find($id);
         // echo ;
         // exit();
-        if($request->session()->has('cart')==1 && count($request->session()->get('cart'))!=0){
+        if ($request->session()->has('cart') == 1 && count($request->session()->get('cart')) != 0) {
             return Redirect::back()->withErrors(['msg', 'The Message']);
-        }else{
+        } else {
             // echo "stringd";
-            $data[] = ['id'=>$request->id,'judul'=>$pw->judul,'jadwal_trip'=>$pw->jadwal_trip,'sifat_trip'=>$pw->sifat_trip,'tgl'=>$request->tgl,"harga" => $price,"jml" => $p[1], "qty" => 1];
-            $cart  = $request->session()->put('cart',$data);
+            $data[] = ['id' => $request->id, 'judul' => $pw->judul, 'jadwal_trip' => $pw->jadwal_trip, 'sifat_trip' => $pw->sifat_trip, 'tgl' => $request->tgl, "harga" => $price, "jml" => $p[1], "qty" => 1];
+            $cart = $request->session()->put('cart', $data);
         }
         // exit();
         return redirect('cart');
@@ -49,32 +50,42 @@ class CartController extends Controller
     {
         $ktp = $request->ktp;
         $nama = $request->nama;
+        $email = auth()->user()->email;
         $hp = $request->hp;
         $alamat = $request->alamat;
-        for ($i=0; $i < count($ktp); $i++) { 
+        for ($i = 0; $i < count($ktp); $i++) {
             $data[$i] = [
-                'ktp'=>$ktp[$i],
-                'nama'=>$nama[$i],
-                'hp'=>$hp[$i],
-                'alamat'=>$alamat[$i]
+                'ktp' => $ktp[$i],
+                'nama' => $nama[$i],
+                'hp' => $hp[$i],
+                'alamat' => $alamat[$i]
             ];
-            $cart  = $request->session()->put('cart2',$data);
+            $cart = $request->session()->put('cart2', $data);
         }
+        $to_name = 'Wisata Kampung Seni';
+        $to_email = 'wisatakampungseni@gmail.com';
+        $data = array('name' => $nama[0],'hp' => $hp[0],'alamat' => $alamat[0]);
+        \Mail::send('emails.mail', $data, function ($message) use ($to_name, $to_email, $email, $nama) {
+            $message->to($to_email, $to_name)
+                ->subject('Confirmasi Reservasi');
+            $message->from($email, $nama[0]);
+        });
         return redirect('reservasi/store');
     }
-     
+
     // menghapus session
-    public function hapus(Request $request,$id) {
-        if($request->session()->has('cart')){
+    public function hapus(Request $request, $id)
+    {
+        if ($request->session()->has('cart')) {
             $cart = $request->session()->get('cart');
             $data = array();
-            for ($i=1; $i < count($cart); $i++) { 
-                if ($i!=$id) {
+            for ($i = 1; $i < count($cart); $i++) {
+                if ($i != $id) {
                     $data[$i] = $cart[$i];
                 }
             }
             $request->session()->forget('cart');
-            $request->session()->put('cart',$data);
+            $request->session()->put('cart', $data);
         }
         return redirect('cart');
     }

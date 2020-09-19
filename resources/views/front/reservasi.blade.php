@@ -7,9 +7,9 @@
       </div>
     </section>
 <div class="container">
-    <br>  
+    <br>
     <!-- <p class="text-center">
-      More bootstrap 4 components on 
+      More bootstrap 4 components on
       <a href="http://bootstrap-ecommerce.com/" target="_blank"> Bootstrap-ecommerce.com</a>
     </p> -->
     <hr>
@@ -21,7 +21,7 @@
       <!-- /.card-header -->
       <div class="card-body table-responsive p-0">
         <table class="table table-bordered">
-                  <thead>                  
+                  <thead>
                     <tr>
                       <th style="width: 10px">#</th>
                       <th>Paket Tour</th>
@@ -35,7 +35,7 @@
                   <tbody>
                     <?php $i=1;?>
                     @foreach ($pw as $fas)
-                      <?php 
+                      <?php
                         $ifo = \App\Trip_Paket::find($fas->id_tour);
                       ?>
                     <tr>
@@ -43,15 +43,15 @@
                       <td>{{$ifo->judul}}</td>
                       <td>{{$fas->tgl_reservasi}}</td>
                       <td>{{$fas->jml_peserta}}</td>
-                      <td>{{$fas->total_harga}}</td>
+                      <td>Rp {{number_format($fas->total_harga, 0, ',', '.')}}</td>
                       <td>{{$fas->status}}</td>
                       <td><a href="{{ '/reservasi/read/'.$fas->id }}"><input type="submit" class="btn btn-danger span3" style='background-color: #eb5d1e;' value="Detail"></a></td>
                     </tr><?php ($i++);?>
-                    @endforeach                                        
+                    @endforeach
                   </tbody>
                 </table>
       </div>
       <!-- /.card-body -->
     </div>
-</div> 
+</div>
 @endsection
