@@ -32,7 +32,7 @@
                             </tr>
                             </tbody>
                         </table>
-                        <table style="width: 100%; border-collapse: collapse;background-color: grey;" border="0" cellspacing="0"
+                        <table style="width: 100%; border-collapse: collapse;" border="0" cellspacing="0"
                                cellpadding="10" >
                             <tbody>
                             <tr>
